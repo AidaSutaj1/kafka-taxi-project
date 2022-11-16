@@ -28,13 +28,24 @@ public class VechileService {
     private VechileDataRepository repository;
 
     public void sendSignalToTopic(Signal signal) {
-        ListenableFuture<SendResult<String, Object>> future =
-                kafkaTemplate.send("home-task-topic", signal.getVechileId().toString(), signal);
+        sendMessageToTopic("home-task-topic", signal.getVechileId().toString(), signal);
+    }
+
+    public void sendVechileDataToTopic(Signal signal) {
+        Double distance = calculateDistancePassedByVechile(signal);
+        VechileData newVechileData = new VechileData(signal.getVechileId(), signal.getLongtitude(), signal.getLatitude(), distance, LocalDateTime.now());
+        sendMessageToTopic("output2", newVechileData.getVechileId().toString(), newVechileData);
+        repository.save(newVechileData);
+    }
+
+    private void sendMessageToTopic(String topicName, String key, Object value) {
+        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topicName, key, value);
+             //   kafkaTemplate.send("home-task-topic", signal.getVechileId().toString(), signal);
         future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
 
             @Override
             public void onSuccess(SendResult<String, Object> result) {
-                System.out.println("Sent message=[" + signal.toString() +
+                System.out.println("Sent message=[" + value.toString() +
                         "] with offset=[" + result.getRecordMetadata().offset() + "]");
 
             }
@@ -42,19 +53,11 @@ public class VechileService {
             @Override
             public void onFailure(Throwable ex) {
                 System.out.println("Unable to send message=["
-                        + signal.toString() + "] due to : " + ex.getMessage());
+                        + value.toString() + "] due to : " + ex.getMessage());
             }
         });
         kafkaTemplate.flush();
-
     }
-
-    public void sendDistanceInfoToTopic(Signal signal) {
-        Double distance = calculateDistancePassedByVechile(signal);
-        VechileData newVechileData = new VechileData(signal.getVechileId(), signal.getLongtitude(), signal.getLatitude(), distance, LocalDateTime.now());
-        repository.save(newVechileData);
-    }
-
     private Double calculateDistancePassedByVechile(Signal signal) {
         Optional<VechileData> optionalVechileData = repository.findById(signal.getVechileId());
         if (optionalVechileData.isPresent()) {

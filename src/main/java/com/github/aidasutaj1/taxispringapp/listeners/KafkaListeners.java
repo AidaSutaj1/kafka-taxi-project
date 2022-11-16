@@ -1,5 +1,6 @@
 package com.github.aidasutaj1.taxispringapp.listeners;
 
+import com.github.aidasutaj1.taxispringapp.documents.VechileData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
 import com.github.aidasutaj1.taxispringapp.service.VechileService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -11,22 +12,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaListeners {
 
-    /*@Autowired
-    private VechileService vechileService;*/
+    @Autowired
+    private VechileService vechileService;
 
     @KafkaListener(
             id = "myGroup",
             topics = "home-task-topic",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "kafkaListenerContainerSignalFactory"
     )
     void listener(ConsumerRecord<String, Signal> consumerRecord, Acknowledgment ack) {
         System.out.println("Listener received " + consumerRecord.value().toString());
+        vechileService.sendVechileDataToTopic(consumerRecord.value());
         ack.acknowledge();
     }
 
-  /*  @KafkaListener(topics = "output2", groupId = "group2")
-    public void listen2(String in) {
-        System.out.println("Ovaj ne treba da slusa");
-    }*/
+    @KafkaListener(
+            id = "group2",
+            topics = "output2",
+            containerFactory = "kafkaListenerContainerVechileDataFactory")
+    void listen2(ConsumerRecord<String, VechileData> consumerRecord, Acknowledgment ack) {
+        System.out.println("Listener2 received " + consumerRecord.value().toString());
+        ack.acknowledge();
+    }
 
 }

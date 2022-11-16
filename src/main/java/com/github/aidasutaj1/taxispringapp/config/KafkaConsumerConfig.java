@@ -1,5 +1,6 @@
 package com.github.aidasutaj1.taxispringapp.config;
 
+import com.github.aidasutaj1.taxispringapp.documents.VechileData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -37,7 +38,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Signal> consumerFactory() {
+    public ConsumerFactory<String, Signal> consumerSignalFactory() {
         JsonDeserializer<Signal> deserializer = new JsonDeserializer<>(Signal.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
@@ -46,11 +47,29 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Signal>> kafkaListenerContainerFactory() {
+    public ConsumerFactory<String, VechileData> consumerVechileDataFactory() {
+        JsonDeserializer<VechileData> deserializer = new JsonDeserializer<>(VechileData.class);
+        deserializer.setRemoveTypeHeaders(false);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeMapperForKey(true);
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(), deserializer);
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Signal>> kafkaListenerContainerSignalFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Signal> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerSignalFactory());
+        return factory;
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, VechileData>> kafkaListenerContainerVechileDataFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, VechileData> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        factory.setConsumerFactory(consumerVechileDataFactory());
         return factory;
     }
 }

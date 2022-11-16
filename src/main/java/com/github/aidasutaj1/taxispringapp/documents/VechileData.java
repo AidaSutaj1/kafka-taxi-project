@@ -24,6 +24,9 @@ public class VechileData {
         this.timestamp = timestamp;
     }
 
+    public VechileData() {
+    }
+
     public Long getVechileId() {
         return vechileId;
     }
@@ -62,5 +65,16 @@ public class VechileData {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "VechileData{" +
+                "vechileId=" + vechileId +
+                ", lastLongtitude=" + lastLongtitude +
+                ", lastLantitude=" + lastLantitude +
+                ", distanceTravelled=" + distanceTravelled +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }
