@@ -1,4 +1,4 @@
-package com.github.aidasutaj1.taxispringapp.documents;
+package com.github.aidasutaj1.taxispringapp.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,18 +1,15 @@
 package com.github.aidasutaj1.taxispringapp.service;
 
 import com.github.aidasutaj1.taxispringapp.api.VehicleController;
-import com.github.aidasutaj1.taxispringapp.documents.VehicleData;
+import com.github.aidasutaj1.taxispringapp.kafka.producer.KafkaProducer;
+import com.github.aidasutaj1.taxispringapp.model.VehicleData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
 import com.github.aidasutaj1.taxispringapp.repository.VehicleDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -23,54 +20,35 @@ public class VehicleService {
     private static final Logger log = LoggerFactory.getLogger(VehicleController.class);
 
     @Value("${spring.kafka.topic1}")
-    private String topic1Name;
+    private String inputTopic;
 
     @Value("${spring.kafka.topic2}")
-    private String topic2Name;
+    private String outputTopic;
 
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaProducer kafkaProducer;
 
     @Autowired
     private VehicleDataRepository repository;
 
     public void sendSignalToTopic(Signal signal) {
-        sendMessageToTopic(topic1Name, signal.getVehicleId().toString(), signal);
+        kafkaProducer.publishMessage(inputTopic, signal.getVehicleId().toString(), signal);
     }
 
     public void sendVehicleDataToTopic(Signal signal) {
         Double distance = calculateDistancePassedByVehicle(signal);
         VehicleData newVehicleData = new VehicleData(signal.getVehicleId(), signal.getLongitude(), signal.getLatitude(), distance, LocalDateTime.now());
-        sendMessageToTopic(topic2Name, newVehicleData.getVehicleId().toString(), newVehicleData);
+        kafkaProducer.publishMessage(outputTopic, newVehicleData.getVehicleId().toString(), newVehicleData);
         repository.save(newVehicleData);
     }
 
-    private void sendMessageToTopic(String topicName, String key, Object value) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topicName, key, value);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
-
-            @Override
-            public void onSuccess(SendResult<String, Object> result) {
-                System.out.println("Sent message=[" + value.toString() +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
-
-            }
-
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=["
-                        + value.toString() + "] due to : " + ex.getMessage());
-            }
-        });
-        kafkaTemplate.flush();
-    }
 
     private Double calculateDistancePassedByVehicle(Signal signal) {
         Optional<VehicleData> optionalVehicleData = repository.findById(signal.getVehicleId());
         if (optionalVehicleData.isPresent()) {
             VehicleData vehicleData = optionalVehicleData.get();
             Double alreadyPassedDistance = vehicleData.getDistanceTravelled();
-            return  alreadyPassedDistance + calculateDistanceBetweenTwoCoordinates(vehicleData.getLastLatitude(), vehicleData.getLastLongitude(), signal.getLatitude(), signal.getLongitude());
+            return alreadyPassedDistance + calculateDistanceBetweenTwoCoordinates(vehicleData.getLastLatitude(), vehicleData.getLastLongitude(), signal.getLatitude(), signal.getLongitude());
         }
         return 0.0;
     }
@@ -89,6 +67,5 @@ public class VehicleService {
             return dist;
         }
     }
-
 
 }

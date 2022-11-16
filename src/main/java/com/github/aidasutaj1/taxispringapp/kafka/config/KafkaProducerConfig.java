@@ -1,4 +1,4 @@
-package com.github.aidasutaj1.taxispringapp.config;
+package com.github.aidasutaj1.taxispringapp.kafka.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

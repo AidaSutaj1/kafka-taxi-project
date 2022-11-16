@@ -1,7 +1,7 @@
-package com.github.aidasutaj1.taxispringapp.listeners;
+package com.github.aidasutaj1.taxispringapp.kafka.consumer;
 
 import com.github.aidasutaj1.taxispringapp.api.VehicleController;
-import com.github.aidasutaj1.taxispringapp.documents.VehicleData;
+import com.github.aidasutaj1.taxispringapp.model.VehicleData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
 import com.github.aidasutaj1.taxispringapp.service.VehicleService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,9 +25,9 @@ public class KafkaListeners {
             topics = "${spring.kafka.topic1}",
             containerFactory = "kafkaListenerContainerSignalFactory"
     )
-    void listener(ConsumerRecord<String, Signal> consumerRecord, Acknowledgment ack) {
-        log.info("Listener received " + consumerRecord.value().toString());
-        vehicleService.sendVehicleDataToTopic(consumerRecord.value());
+    void listener(ConsumerRecord<String, Signal> message, Acknowledgment ack) {
+        log.info("Listener received " + message.value().toString());
+        vehicleService.sendVehicleDataToTopic(message.value());
         ack.acknowledge();
     }
 
@@ -35,8 +35,8 @@ public class KafkaListeners {
             id = "${spring.kafka.consumer.group-id2}",
             topics = "${spring.kafka.topic2}",
             containerFactory = "kafkaListenerContainerVehicleDataFactory")
-    void listen2(ConsumerRecord<String, VehicleData> consumerRecord, Acknowledgment ack) {
-        log.info("Listener2 received " + consumerRecord.value().toString());
+    void listen2(ConsumerRecord<String, VehicleData> message, Acknowledgment ack) {
+        log.info("Listener2 received " + message.value().toString());
         ack.acknowledge();
     }
 

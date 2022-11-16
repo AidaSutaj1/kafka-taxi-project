@@ -1,6 +1,6 @@
-package com.github.aidasutaj1.taxispringapp.config;
+package com.github.aidasutaj1.taxispringapp.kafka.config;
 
-import com.github.aidasutaj1.taxispringapp.documents.VehicleData;
+import com.github.aidasutaj1.taxispringapp.model.VehicleData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
