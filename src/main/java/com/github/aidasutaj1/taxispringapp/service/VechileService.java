@@ -33,14 +33,13 @@ public class VechileService {
 
     public void sendVechileDataToTopic(Signal signal) {
         Double distance = calculateDistancePassedByVechile(signal);
-        VechileData newVechileData = new VechileData(signal.getVechileId(), signal.getLongtitude(), signal.getLatitude(), distance, LocalDateTime.now());
+        VechileData newVechileData = new VechileData(signal.getVechileId(), signal.getLongitude(), signal.getLatitude(), distance, LocalDateTime.now());
         sendMessageToTopic("output2", newVechileData.getVechileId().toString(), newVechileData);
         repository.save(newVechileData);
     }
 
     private void sendMessageToTopic(String topicName, String key, Object value) {
         ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topicName, key, value);
-             //   kafkaTemplate.send("home-task-topic", signal.getVechileId().toString(), signal);
         future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
 
             @Override
@@ -58,17 +57,19 @@ public class VechileService {
         });
         kafkaTemplate.flush();
     }
+
     private Double calculateDistancePassedByVechile(Signal signal) {
         Optional<VechileData> optionalVechileData = repository.findById(signal.getVechileId());
         if (optionalVechileData.isPresent()) {
             VechileData vechileData = optionalVechileData.get();
-            return  calculateDistanceBetweenTwoCoordinates(vechileData.getLastLantitude(), vechileData.getLastLantitude(), signal.getLatitude(), signal.getLongtitude());
+            Double alreadyPassedDistance = vechileData.getDistanceTravelled();
+            return  alreadyPassedDistance + calculateDistanceBetweenTwoCoordinates(vechileData.getLastLatitude(), vechileData.getLastLongitude(), signal.getLatitude(), signal.getLongitude());
         }
         return 0.0;
     }
 
     private Double calculateDistanceBetweenTwoCoordinates(Double lat1, Double lon1, Double lat2, Double lon2) {
-        if ((lat1 == lat2) && (lon1 == lon2)) {
+        if ((lat1.equals(lat2)) && (lon1.equals(lon2))) {
             return 0.0;
         } else {
             Double theta = lon1 - lon2;

@@ -10,16 +10,16 @@ public class VechileData {
 
     @Id
     private Long vechileId;
-    private Double lastLongtitude;
-    private Double lastLantitude;
+    private Double lastLongitude;
+    private Double lastLatitude;
     private Double distanceTravelled = 0.0;
 
     private LocalDateTime timestamp;
 
-    public VechileData(Long vechileId, Double lastLongtitude, Double lastLantitude, Double distanceTravelled, LocalDateTime timestamp) {
+    public VechileData(Long vechileId, Double lastLongitude, Double lastLatitude, Double distanceTravelled, LocalDateTime timestamp) {
         this.vechileId = vechileId;
-        this.lastLongtitude = lastLongtitude;
-        this.lastLantitude = lastLantitude;
+        this.lastLongitude = lastLongitude;
+        this.lastLatitude = lastLatitude;
         this.distanceTravelled = distanceTravelled;
         this.timestamp = timestamp;
     }
@@ -35,20 +35,20 @@ public class VechileData {
         this.vechileId = vechileId;
     }
 
-    public Double getLastLongtitude() {
-        return lastLongtitude;
+    public Double getLastLongitude() {
+        return lastLongitude;
     }
 
-    public void setLastLongtitude(Double lastLongtitude) {
-        this.lastLongtitude = lastLongtitude;
+    public void setLastLongitude(Double lastLongtitude) {
+        this.lastLongitude = lastLongtitude;
     }
 
-    public Double getLastLantitude() {
-        return lastLantitude;
+    public Double getLastLatitude() {
+        return lastLatitude;
     }
 
-    public void setLastLantitude(Double lastLantitude) {
-        this.lastLantitude = lastLantitude;
+    public void setLastLatitude(Double lastLantitude) {
+        this.lastLatitude = lastLantitude;
     }
 
     public Double getDistanceTravelled() {
@@ -71,8 +71,8 @@ public class VechileData {
     public String toString() {
         return "VechileData{" +
                 "vechileId=" + vechileId +
-                ", lastLongtitude=" + lastLongtitude +
-                ", lastLantitude=" + lastLantitude +
+                ", lastLongitude=" + lastLongitude +
+                ", lastLatitude=" + lastLatitude +
                 ", distanceTravelled=" + distanceTravelled +
                 ", timestamp=" + timestamp +
                 '}';

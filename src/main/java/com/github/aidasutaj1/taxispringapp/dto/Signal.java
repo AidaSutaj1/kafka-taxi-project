@@ -7,7 +7,7 @@ public class Signal {
     @NotNull
     private Long vechileId;
     @NotNull
-    private Double longtitude;
+    private Double longitude;
     @NotNull
     private Double latitude;
 
@@ -19,12 +19,12 @@ public class Signal {
         this.vechileId = vechileId;
     }
 
-    public Double getLongtitude() {
-        return longtitude;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setLongtitude(Double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public Double getLatitude() {
@@ -40,7 +40,7 @@ public class Signal {
     public String toString() {
         return "Signal{" +
                 "vechileId=" + vechileId +
-                ", longtitude=" + longtitude +
+                ", longitude=" + longitude +
                 ", latitude=" + latitude +
                 '}';
     }
