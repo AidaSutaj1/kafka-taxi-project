@@ -1,5 +1,7 @@
 package com.github.aidasutaj1.taxispringapp.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class Signal {
@@ -7,8 +9,12 @@ public class Signal {
     @NotNull
     private Long vehicleId;
     @NotNull
+    @Min(value=-180, message="Longitude must be equal or greater than -180")
+    @Max(value=180, message="Longitude must be equal or less than 180")
     private Double longitude;
     @NotNull
+    @Min(value=-90, message="Latitude must be equal or greater than -90")
+    @Max(value=90, message="Latitude must be equal or less than 90")
     private Double latitude;
 
     public Long getVehicleId() {
