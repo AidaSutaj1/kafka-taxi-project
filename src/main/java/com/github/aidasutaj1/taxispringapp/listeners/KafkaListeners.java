@@ -16,12 +16,13 @@ import org.springframework.stereotype.Component;
 public class KafkaListeners {
 
     private static final Logger log = LoggerFactory.getLogger(VechileController.class);
+
     @Autowired
     private VechileService vechileService;
 
     @KafkaListener(
-            id = "myGroup",
-            topics = "home-task-topic",
+            id = "${spring.kafka.consumer.group-id}",
+            topics = "${spring.kafka.topic1}",
             containerFactory = "kafkaListenerContainerSignalFactory"
     )
     void listener(ConsumerRecord<String, Signal> consumerRecord, Acknowledgment ack) {
@@ -31,8 +32,8 @@ public class KafkaListeners {
     }
 
     @KafkaListener(
-            id = "group2",
-            topics = "output2",
+            id = "${spring.kafka.consumer.group-id2}",
+            topics = "${spring.kafka.topic2}",
             containerFactory = "kafkaListenerContainerVechileDataFactory")
     void listen2(ConsumerRecord<String, VechileData> consumerRecord, Acknowledgment ack) {
         log.info("Listener2 received " + consumerRecord.value().toString());

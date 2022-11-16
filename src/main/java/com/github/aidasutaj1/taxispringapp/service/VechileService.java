@@ -7,6 +7,7 @@ import com.github.aidasutaj1.taxispringapp.repository.VechileDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,19 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
 public class VechileService {
 
     private static final Logger log = LoggerFactory.getLogger(VechileController.class);
+
+    @Value("${spring.kafka.topic1}")
+    private String topic1Name;
+
+    @Value("${spring.kafka.topic2}")
+    private String topic2Name;
+
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -28,13 +35,13 @@ public class VechileService {
     private VechileDataRepository repository;
 
     public void sendSignalToTopic(Signal signal) {
-        sendMessageToTopic("home-task-topic", signal.getVechileId().toString(), signal);
+        sendMessageToTopic(topic1Name, signal.getVechileId().toString(), signal);
     }
 
     public void sendVechileDataToTopic(Signal signal) {
         Double distance = calculateDistancePassedByVechile(signal);
         VechileData newVechileData = new VechileData(signal.getVechileId(), signal.getLongitude(), signal.getLatitude(), distance, LocalDateTime.now());
-        sendMessageToTopic("output2", newVechileData.getVechileId().toString(), newVechileData);
+        sendMessageToTopic(topic2Name, newVechileData.getVechileId().toString(), newVechileData);
         repository.save(newVechileData);
     }
 
