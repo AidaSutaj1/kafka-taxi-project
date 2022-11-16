@@ -6,49 +6,49 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document
-public class VechileData {
+public class VehicleData {
 
     @Id
-    private Long vechileId;
+    private Long vehicleId;
     private Double lastLongitude;
     private Double lastLatitude;
     private Double distanceTravelled = 0.0;
 
     private LocalDateTime timestamp;
 
-    public VechileData(Long vechileId, Double lastLongitude, Double lastLatitude, Double distanceTravelled, LocalDateTime timestamp) {
-        this.vechileId = vechileId;
+    public VehicleData(Long vehicleId, Double lastLongitude, Double lastLatitude, Double distanceTravelled, LocalDateTime timestamp) {
+        this.vehicleId = vehicleId;
         this.lastLongitude = lastLongitude;
         this.lastLatitude = lastLatitude;
         this.distanceTravelled = distanceTravelled;
         this.timestamp = timestamp;
     }
 
-    public VechileData() {
+    public VehicleData() {
     }
 
-    public Long getVechileId() {
-        return vechileId;
+    public Long getVehicleId() {
+        return vehicleId;
     }
 
-    public void setVechileId(Long vechileId) {
-        this.vechileId = vechileId;
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public Double getLastLongitude() {
         return lastLongitude;
     }
 
-    public void setLastLongitude(Double lastLongtitude) {
-        this.lastLongitude = lastLongtitude;
+    public void setLastLongitude(Double lastLongitude) {
+        this.lastLongitude = lastLongitude;
     }
 
     public Double getLastLatitude() {
         return lastLatitude;
     }
 
-    public void setLastLatitude(Double lastLantitude) {
-        this.lastLatitude = lastLantitude;
+    public void setLastLatitude(Double lastLatitude) {
+        this.lastLatitude = lastLatitude;
     }
 
     public Double getDistanceTravelled() {
@@ -69,8 +69,8 @@ public class VechileData {
 
     @Override
     public String toString() {
-        return "VechileData{" +
-                "vechileId=" + vechileId +
+        return "VehicleData{" +
+                "vehicleId=" + vehicleId +
                 ", lastLongitude=" + lastLongitude +
                 ", lastLatitude=" + lastLatitude +
                 ", distanceTravelled=" + distanceTravelled +

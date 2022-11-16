@@ -1,9 +1,9 @@
 package com.github.aidasutaj1.taxispringapp.service;
 
-import com.github.aidasutaj1.taxispringapp.api.VechileController;
-import com.github.aidasutaj1.taxispringapp.documents.VechileData;
+import com.github.aidasutaj1.taxispringapp.api.VehicleController;
+import com.github.aidasutaj1.taxispringapp.documents.VehicleData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
-import com.github.aidasutaj1.taxispringapp.repository.VechileDataRepository;
+import com.github.aidasutaj1.taxispringapp.repository.VehicleDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class VechileService {
+public class VehicleService {
 
-    private static final Logger log = LoggerFactory.getLogger(VechileController.class);
+    private static final Logger log = LoggerFactory.getLogger(VehicleController.class);
 
     @Value("${spring.kafka.topic1}")
     private String topic1Name;
@@ -32,17 +32,17 @@ public class VechileService {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
-    private VechileDataRepository repository;
+    private VehicleDataRepository repository;
 
     public void sendSignalToTopic(Signal signal) {
-        sendMessageToTopic(topic1Name, signal.getVechileId().toString(), signal);
+        sendMessageToTopic(topic1Name, signal.getVehicleId().toString(), signal);
     }
 
-    public void sendVechileDataToTopic(Signal signal) {
-        Double distance = calculateDistancePassedByVechile(signal);
-        VechileData newVechileData = new VechileData(signal.getVechileId(), signal.getLongitude(), signal.getLatitude(), distance, LocalDateTime.now());
-        sendMessageToTopic(topic2Name, newVechileData.getVechileId().toString(), newVechileData);
-        repository.save(newVechileData);
+    public void sendVehicleDataToTopic(Signal signal) {
+        Double distance = calculateDistancePassedByVehicle(signal);
+        VehicleData newVehicleData = new VehicleData(signal.getVehicleId(), signal.getLongitude(), signal.getLatitude(), distance, LocalDateTime.now());
+        sendMessageToTopic(topic2Name, newVehicleData.getVehicleId().toString(), newVehicleData);
+        repository.save(newVehicleData);
     }
 
     private void sendMessageToTopic(String topicName, String key, Object value) {
@@ -65,12 +65,12 @@ public class VechileService {
         kafkaTemplate.flush();
     }
 
-    private Double calculateDistancePassedByVechile(Signal signal) {
-        Optional<VechileData> optionalVechileData = repository.findById(signal.getVechileId());
-        if (optionalVechileData.isPresent()) {
-            VechileData vechileData = optionalVechileData.get();
-            Double alreadyPassedDistance = vechileData.getDistanceTravelled();
-            return  alreadyPassedDistance + calculateDistanceBetweenTwoCoordinates(vechileData.getLastLatitude(), vechileData.getLastLongitude(), signal.getLatitude(), signal.getLongitude());
+    private Double calculateDistancePassedByVehicle(Signal signal) {
+        Optional<VehicleData> optionalVehicleData = repository.findById(signal.getVehicleId());
+        if (optionalVehicleData.isPresent()) {
+            VehicleData vehicleData = optionalVehicleData.get();
+            Double alreadyPassedDistance = vehicleData.getDistanceTravelled();
+            return  alreadyPassedDistance + calculateDistanceBetweenTwoCoordinates(vehicleData.getLastLatitude(), vehicleData.getLastLongitude(), signal.getLatitude(), signal.getLongitude());
         }
         return 0.0;
     }

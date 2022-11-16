@@ -1,6 +1,6 @@
 package com.github.aidasutaj1.taxispringapp.config;
 
-import com.github.aidasutaj1.taxispringapp.documents.VechileData;
+import com.github.aidasutaj1.taxispringapp.documents.VehicleData;
 import com.github.aidasutaj1.taxispringapp.dto.Signal;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -47,8 +47,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, VechileData> consumerVechileDataFactory() {
-        JsonDeserializer<VechileData> deserializer = new JsonDeserializer<>(VechileData.class);
+    public ConsumerFactory<String, VehicleData> consumerVehicleDataFactory() {
+        JsonDeserializer<VehicleData> deserializer = new JsonDeserializer<>(VehicleData.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
@@ -65,11 +65,11 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, VechileData>> kafkaListenerContainerVechileDataFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, VechileData> factory =
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, VehicleData>> kafkaListenerContainerVehicleDataFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, VehicleData> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        factory.setConsumerFactory(consumerVechileDataFactory());
+        factory.setConsumerFactory(consumerVehicleDataFactory());
         return factory;
     }
 }

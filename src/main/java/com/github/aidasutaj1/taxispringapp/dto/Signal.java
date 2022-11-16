@@ -5,18 +5,18 @@ import javax.validation.constraints.NotNull;
 public class Signal {
 
     @NotNull
-    private Long vechileId;
+    private Long vehicleId;
     @NotNull
     private Double longitude;
     @NotNull
     private Double latitude;
 
-    public Long getVechileId() {
-        return vechileId;
+    public Long getVehicleId() {
+        return vehicleId;
     }
 
-    public void setVechileId(Long vechileId) {
-        this.vechileId = vechileId;
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public Double getLongitude() {
@@ -39,7 +39,7 @@ public class Signal {
     @Override
     public String toString() {
         return "Signal{" +
-                "vechileId=" + vechileId +
+                "vehicleId=" + vehicleId +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
                 '}';
