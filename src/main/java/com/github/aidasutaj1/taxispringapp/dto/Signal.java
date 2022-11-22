@@ -3,6 +3,7 @@ package com.github.aidasutaj1.taxispringapp.dto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class Signal {
 
@@ -49,5 +50,18 @@ public class Signal {
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Signal signal = (Signal) o;
+        return vehicleId.equals(signal.vehicleId) && longitude.equals(signal.longitude) && latitude.equals(signal.latitude);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vehicleId, longitude, latitude);
     }
 }

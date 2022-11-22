@@ -31,15 +31,19 @@ public class VehicleService {
     @Autowired
     private VehicleDataRepository repository;
 
+    public void saveVehicleData(VehicleData newVehicleData) {
+        repository.save(newVehicleData);
+    }
+
     public void sendSignalToTopic(Signal signal) {
         kafkaProducer.publishMessage(inputTopic, signal.getVehicleId().toString(), signal);
     }
 
-    public void sendVehicleDataToTopic(Signal signal) {
+    public void publishAndSaveVehicleDataFrom(Signal signal) {
         Double distance = calculateDistancePassedByVehicle(signal);
         VehicleData newVehicleData = new VehicleData(signal.getVehicleId(), signal.getLongitude(), signal.getLatitude(), distance, LocalDateTime.now());
         kafkaProducer.publishMessage(outputTopic, newVehicleData.getVehicleId().toString(), newVehicleData);
-        repository.save(newVehicleData);
+        saveVehicleData(newVehicleData);
     }
 
 

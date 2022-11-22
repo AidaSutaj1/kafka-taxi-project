@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class KafkaListeners {
+@Service
+public class KafkaConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(VehicleController.class);
 
@@ -27,7 +27,7 @@ public class KafkaListeners {
     )
     void listener(ConsumerRecord<String, Signal> message, Acknowledgment ack) {
         log.info("Listener received " + message.value().toString());
-        vehicleService.sendVehicleDataToTopic(message.value());
+        vehicleService.publishAndSaveVehicleDataFrom(message.value());
         ack.acknowledge();
     }
 
